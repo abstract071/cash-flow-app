@@ -1,1 +1,1 @@
-# Visit this [link](http://shut-number.surge.sh/) to check it out
+# Visit this [link](http://synonymous-woman.surge.sh/) to check it out
