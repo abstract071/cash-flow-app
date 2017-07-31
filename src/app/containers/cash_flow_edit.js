@@ -4,27 +4,40 @@ import { connect } from 'react-redux';
 import { Container, Form, Dropdown, Button, TextArea, Input } from 'semantic-ui-react';
 
 import { addCashFlowItem, fetchCashFlow } from '../actions/cash_flow_actions';
-import { fetchCategory } from '../actions/category_actions';
+import { fetchCategories } from '../actions/category_actions';
+import { EXPENSES, INCOME } from "../constants/category_types";
 
 class CashFlowEdit extends Component {
     componentWillMount() {
-        this.props.fetchCategory();
+        this.props.fetchCategories();
 
         const { id } = this.props.match.params;
         if (id) {
             this.props.fetchCashFlow();
-            this.handleInitialize(+id);
+            this.handleEditInitialize(+id);
+        } else {
+            this.handleAddInitialize();
         }
     }
 
-    handleInitialize(id) {
+    handleEditInitialize(id) {
+        debugger;
         const cashFlowItem = this.props.cashFlow.find(cashFlowItem => cashFlowItem.id === id);
-        const { amountOfMoney, description, category, date } = cashFlowItem;
+        const { amountOfMoney, description, category, type, date } = cashFlowItem;
         const initialValues = {
             amountOfMoney,
             description,
             category,
+            type,
             date
+        };
+
+        this.props.initialize(initialValues);
+    }
+
+    handleAddInitialize() {
+        const initialValues = {
+            type: INCOME
         };
 
         this.props.initialize(initialValues);
@@ -56,12 +69,22 @@ class CashFlowEdit extends Component {
 
     render() {
         const { handleSubmit } = this.props;
-        const dropdownData = this.props.categories.map(category => {
+        const dropdownData = this.props.categories.map(item => {
             return {
-                text: category,
-                value: category
+                text: item.category,
+                value: item.category
             }
         });
+        const categoryTypes = [
+            {
+                text: INCOME,
+                value: INCOME
+            },
+            {
+                text: EXPENSES,
+                value: EXPENSES
+            }
+        ];
 
         return (
             <Container>
@@ -89,6 +112,16 @@ class CashFlowEdit extends Component {
                         fluid
                         selection
                         options={dropdownData}
+                    />
+                    <Field
+                        label="Category type"
+                        name="type"
+                        component={this.renderField.bind(this)}
+                        as={Dropdown}
+                        placeholder='Choose a type of category...'
+                        fluid
+                        selection
+                        options={categoryTypes}
                     />
                     <Field
                         label="Date"
@@ -137,5 +170,5 @@ export default reduxForm({
     validate,
     form: 'CashFlowEditForm'
 })(
-    connect(mapStateToProps, { addCashFlowItem, fetchCategory, fetchCashFlow })(CashFlowEdit)
+    connect(mapStateToProps, { addCashFlowItem, fetchCategories, fetchCashFlow })(CashFlowEdit)
 );

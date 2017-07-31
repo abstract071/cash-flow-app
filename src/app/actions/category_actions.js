@@ -1,20 +1,21 @@
 import {
-    REMOVE_CATEGORY,
+    REMOVE_CATEGORY_ITEM,
     FETCH_CATEGORIES,
     EDIT_CATEGORY_ITEM,
-    ADD_CATEGORY } from './types';
+    ADD_CATEGORY_ITEM,
+} from './types';
 
-export function removeCategory(category) {
+export function removeCategoryItem(category) {
     return {
-        type: REMOVE_CATEGORY,
+        type: REMOVE_CATEGORY_ITEM,
         payload: category
     };
 }
 
-export function fetchCategory() {
+export function fetchCategories() {
     return {
         type: FETCH_CATEGORIES,
-        payload: {}
+        payload: []
     };
 }
 
@@ -27,9 +28,9 @@ export function editCategoryItem(data, cb) {
     };
 }
 
-export function addCategory(category) {
+export function addCategoryItem(category) {
     return {
-        type: ADD_CATEGORY,
+        type: ADD_CATEGORY_ITEM,
         payload: category
     };
 }

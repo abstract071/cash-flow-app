@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { Field, reduxForm, initialize } from 'redux-form';
 import { connect } from 'react-redux';
-import { Container, Form, Button, Input } from 'semantic-ui-react';
+import { Container, Form, Button, Input, Dropdown } from 'semantic-ui-react';
 
-import { fetchCategory, editCategoryItem } from '../actions/category_actions';
+import { INCOME, EXPENSES } from '../constants/category_types';
+import { fetchCategories, editCategoryItem } from '../actions/category_actions';
 
 class CategoryEdit extends Component {
     componentWillMount() {
-        this.props.fetchCategory();
+        this.props.fetchCategories();
 
         const { name } = this.props.match.params;
         this.handleInitialize(name);
@@ -15,9 +16,10 @@ class CategoryEdit extends Component {
 
     handleInitialize(name) {
         const { categories } = this.props;
-        const categoryName = categories.find(category => category === name);
+        const categoryItem = categories.find(item => item.category === name);
         const initialValues = {
-            category: categoryName
+            category: categoryItem.category,
+            type: categoryItem.type
         };
 
         this.props.initialize(initialValues);
@@ -40,7 +42,8 @@ class CategoryEdit extends Component {
     onSubmit(values) {
         const data = {
             oldName: this.props.match.params.name,
-            newName: values.category
+            newName: values.category,
+            type: values.type
         };
         this.props.editCategoryItem(data, () => {
             this.props.history.push('/');
@@ -49,6 +52,16 @@ class CategoryEdit extends Component {
 
     render() {
         const { handleSubmit } = this.props;
+        const types = [
+            {
+                text: INCOME,
+                value: INCOME
+            },
+            {
+                text: EXPENSES,
+                value: EXPENSES
+            }
+        ];
 
         return (
             <Container>
@@ -58,6 +71,16 @@ class CategoryEdit extends Component {
                         name="category"
                         component={this.renderField.bind(this)}
                         as={Input}
+                    />
+                    <Field
+                        label="Type"
+                        name="type"
+                        component={this.renderField.bind(this)}
+                        as={Dropdown}
+                        placeholder='Choose a type of category...'
+                        fluid
+                        selection
+                        options={types}
                     />
                     <Button type='submit'>Submit</Button>
                 </Form>
@@ -84,5 +107,5 @@ export default reduxForm({
     validate,
     form: 'CashFlowEditForm'
 })(
-    connect(mapStateToProps, { fetchCategory, editCategoryItem })(CategoryEdit)
+    connect(mapStateToProps, { fetchCategories, editCategoryItem })(CategoryEdit)
 );
