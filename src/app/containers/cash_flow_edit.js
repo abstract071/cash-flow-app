@@ -8,6 +8,12 @@ import { fetchCategories } from '../actions/category_actions';
 import { EXPENSES, INCOME } from "../constants/category_types";
 
 class CashFlowEdit extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = { categoryType: INCOME };
+    }
+
     componentWillMount() {
         this.props.fetchCategories();
 
@@ -32,6 +38,7 @@ class CashFlowEdit extends Component {
             date
         };
 
+        this.setState({ categoryType: type });
         this.props.initialize(initialValues);
     }
 
@@ -48,12 +55,18 @@ class CashFlowEdit extends Component {
             <Form.Field error={touched && !!error}>
                 <label htmlFor={input.name}>{label}</label>
                 <As {...input} {...props}
-                    onChange={(params,data) => input.onChange(data.value)} />
+                    onChange={(params,data) => { this.handleChange(input, data.value); input.onChange(data.value) }} />
                 <div>
                     {touched ? error : ''}
                 </div>
             </Form.Field>
         );
+    }
+
+    handleChange(input, value) {
+        if (input.name === 'type') {
+            this.setState({ categoryType: value });
+        }
     }
 
     onSubmit(values) {
@@ -69,11 +82,13 @@ class CashFlowEdit extends Component {
 
     render() {
         const { handleSubmit } = this.props;
-        const dropdownData = this.props.categories.map(item => {
-            return {
-                text: item.category,
-                value: item.category
-            }
+        const dropdownData = this.props.categories
+            .filter(item => item.type === this.state.categoryType)
+            .map(item => {
+                return {
+                    text: item.category,
+                    value: item.category
+                }
         });
         const categoryTypes = [
             {
