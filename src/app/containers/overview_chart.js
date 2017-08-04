@@ -1,30 +1,117 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Container } from 'semantic-ui-react';
+import { Container, Dropdown } from 'semantic-ui-react';
 import { ResponsiveContainer, Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from "recharts";
 
 import { fetchCashFlow } from '../actions/cash_flow_actions';
 import { INCOME } from '../constants/category_types';
 
 class OverviewChart extends Component {
+    constructor(props) {
+        super(props);
+
+        const date = new Date();
+        const months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+        this.state = {
+            year: date.getFullYear(),
+            month: date.getMonth(),
+            months
+        };
+    }
+
     componentDidMount() {
         this.props.fetchCashFlow();
     }
 
-    render() {
-        const { cashFlow } = this.props;
-        const data = cashFlow.map(cashFlowItem => {
+    onYearChange(event, { value }) {
+        this.setState({ year: value });
+    }
+
+    onMonthChange(event, { value }) {
+        this.setState({ month: this.state.months.indexOf(value) });
+    }
+
+    getDaysPerMonth(date) {
+        return Array.from(new Array(new Date(date.getFullYear(), date.getMonth()+1, 0).getDate()), (v, i) => ++i);
+    }
+
+    getMonthsData() {
+        return this.state.months.map(month => {
             return {
-                name: cashFlowItem.date,
-                "income/expenses": cashFlowItem.type === INCOME ? +cashFlowItem.amountOfMoney : -Math.abs(+cashFlowItem.amountOfMoney)
+                text: month,
+                value: month
+            }
+        });
+    }
+
+    getYearsData() {
+        const currentYear = new Date().getFullYear();
+        const years = Array.from(new Array(10), (v, i) => (currentYear - i));
+        return years.map(year => {
+            return {
+                text: year,
+                value: year
+            }
+        });
+    }
+
+    getChartData() {
+        const { cashFlow } = this.props;
+        const monthlyCashFlow = cashFlow.filter(cashFlowItem => this.state.month === new Date(cashFlowItem.date).getMonth());
+
+        return this.getDaysPerMonth(new Date(this.state.year, this.state.month)).map(day => {
+            const cashFlowItem = monthlyCashFlow.find(item => day === new Date(item.date).getDate());
+
+            return {
+                day,
+                'income/expenses': cashFlowItem ?
+                    cashFlowItem.type === INCOME ?
+                        +cashFlowItem.amountOfMoney : -Math.abs(+cashFlowItem.amountOfMoney) : 0
             };
         });
+    }
+
+    render() {
+        const chartData = this.getChartData();
+        // const { cashFlow } = this.props;
+        // const data = cashFlow.map(cashFlowItem => {
+        //     return {
+        //         name: cashFlowItem.date,
+        //         'income/expenses': cashFlowItem.type === INCOME ? +cashFlowItem.amountOfMoney : -Math.abs(+cashFlowItem.amountOfMoney)
+        //     };
+        // });
+
+        // const date = new Date();
+        // const days = this.getDaysPerMonth(date)
+        //     .map(day => {
+        //         return {
+        //             day,
+        //             'income/expenses': 2
+        //         }
+        // });
+        const months = this.getMonthsData();
+        const years = this.getYearsData();
+        // console.log(days);
 
         return (
             <Container>
+                <Dropdown
+                    selection
+                    onChange={this.onMonthChange.bind(this)}
+                    value={this.state.months[this.state.month]}
+                    text={`${this.state.months[this.state.month]}`}
+                    options={months}
+                />
+                <Dropdown
+                    selection
+                    onChange={this.onYearChange.bind(this)}
+                    value={this.state.year}
+                    text={`${this.state.year}`}
+                    options={years}
+                />
                 <ResponsiveContainer width="80%" height={400}>
-                    <BarChart data={data}>
-                        <XAxis dataKey="name" />
+                    <BarChart data={chartData}>
+                        <XAxis dataKey="day" />
                         <YAxis />
                         <CartesianGrid strokeDasharray="3 3" />
                         <Tooltip />

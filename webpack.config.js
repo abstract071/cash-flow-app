@@ -23,6 +23,7 @@ const commonConfig = merge([
             filename: '[name].[hash].js',
             path: PATHS.dist
         },
+        devtool: 'inline-source-map',
         module: {
             rules: [
                 {
@@ -92,7 +93,12 @@ const productionConfig = merge([
                 'react-dom',
                 'redux',
                 'react-redux',
-                'semantic-ui-react'
+                'semantic-ui-react',
+                'lodash',
+                'redux-form',
+                'react-router-dom',
+                'recharts',
+                'redux-localstorage'
             ]
         }
     },
@@ -119,12 +125,10 @@ const productionConfig = merge([
             }),
             new webpack.optimize.CommonsChunkPlugin({
                names: ['vendors', 'manifest'] // try
-            })/*,
-            new webpack.optimize.CommonsChunkPlugin({
-                name: 'manifest',
-                minChunks: Infinity
-            })*/
-            ,
+            }),
+            new webpack.DefinePlugin({
+                'process.env.NODE_ENV': JSON.stringify('production')
+            }),
             new BabiliPlugin()
         ]
     }

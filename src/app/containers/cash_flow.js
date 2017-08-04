@@ -52,7 +52,7 @@ class CashFlow extends Component {
                         {this.renderCashFlowItems()}
                     </Table.Body>
                 </Table>
-                <Container text>
+                <Container fluid>
                     <Button as={Link} positive to="/cashflow/edit">Add Income/Expenses</Button>
                 </Container>
             </div>
