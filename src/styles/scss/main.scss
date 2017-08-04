@@ -1,0 +1,17 @@
+.ui.header {
+  font-family: 'Lakki Reddy';
+  padding-top: 20px;
+
+  @at-root h1#{&} {
+    font-size: 3rem;
+    text-shadow: 1px 1px 5px #111;
+  }
+}
+
+.controls {
+  padding-bottom: 20px;
+
+  .dropdown {
+    margin-right: 10px;
+  }
+}

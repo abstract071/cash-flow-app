@@ -5,6 +5,8 @@ import { Provider } from 'react-redux';
 import { createStore, compose } from 'redux';
 import persistState from 'redux-localstorage';
 
+import '../styles/scss/main.scss';
+
 import reducers from './reducers';
 import HeaderComponent from './components/header';
 

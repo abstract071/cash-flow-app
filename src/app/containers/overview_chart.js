@@ -57,9 +57,13 @@ class OverviewChart extends Component {
 
     getChartData() {
         const { cashFlow } = this.props;
-        const monthlyCashFlow = cashFlow.filter(cashFlowItem => this.state.month === new Date(cashFlowItem.date).getMonth());
+        const { year, month } = this.state;
+        const monthlyCashFlow = cashFlow.filter(cashFlowItem => {
+            const date = new Date(cashFlowItem.date);
+            return month === date.getMonth() && year === date.getFullYear();
+        });
 
-        return this.getDaysPerMonth(new Date(this.state.year, this.state.month)).map(day => {
+        return this.getDaysPerMonth(new Date(year, month)).map(day => {
             const cashFlowItem = monthlyCashFlow.find(item => day === new Date(item.date).getDate());
 
             return {
@@ -73,42 +77,27 @@ class OverviewChart extends Component {
 
     render() {
         const chartData = this.getChartData();
-        // const { cashFlow } = this.props;
-        // const data = cashFlow.map(cashFlowItem => {
-        //     return {
-        //         name: cashFlowItem.date,
-        //         'income/expenses': cashFlowItem.type === INCOME ? +cashFlowItem.amountOfMoney : -Math.abs(+cashFlowItem.amountOfMoney)
-        //     };
-        // });
-
-        // const date = new Date();
-        // const days = this.getDaysPerMonth(date)
-        //     .map(day => {
-        //         return {
-        //             day,
-        //             'income/expenses': 2
-        //         }
-        // });
         const months = this.getMonthsData();
         const years = this.getYearsData();
-        // console.log(days);
 
         return (
             <Container>
-                <Dropdown
-                    selection
-                    onChange={this.onMonthChange.bind(this)}
-                    value={this.state.months[this.state.month]}
-                    text={`${this.state.months[this.state.month]}`}
-                    options={months}
-                />
-                <Dropdown
-                    selection
-                    onChange={this.onYearChange.bind(this)}
-                    value={this.state.year}
-                    text={`${this.state.year}`}
-                    options={years}
-                />
+                <div className="controls">
+                    <Dropdown
+                        selection
+                        onChange={this.onMonthChange.bind(this)}
+                        value={this.state.months[this.state.month]}
+                        text={`${this.state.months[this.state.month]}`}
+                        options={months}
+                    />
+                    <Dropdown
+                        selection
+                        onChange={this.onYearChange.bind(this)}
+                        value={this.state.year}
+                        text={`${this.state.year}`}
+                        options={years}
+                    />
+                </div>
                 <ResponsiveContainer width="80%" height={400}>
                     <BarChart data={chartData}>
                         <XAxis dataKey="day" />
