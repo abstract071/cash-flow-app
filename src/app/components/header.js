@@ -1,26 +1,19 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Container, Header } from 'semantic-ui-react';
 
-import CashFlowIndex from './cash_flow_index';
-import CashFlowEdit from '../containers/cash_flow_edit';
-import CategoryEdit from '../containers/category_edit';
+import Routes from '../routes/routes';
 
 class HeaderComponent extends Component {
     render() {
         return (
-            <BrowserRouter>
-                <div>
-                    <Container>
-                        <Header as="h1">Your Cash Flow</Header>
-                    </Container>
+            <div>
+                <Container>
+                    <Header as="h1"><Link to="/">Your Cash Flow</Link></Header>
+                </Container>
 
-                    <Route exact path="/" component={CashFlowIndex} />
-                    <Route exact path="/cashflow/edit" component={CashFlowEdit} />
-                    <Route path="/cashflow/edit/:id" component={CashFlowEdit} />
-                    <Route path="/category/edit/:name" component={CategoryEdit} />
-                </div>
-            </BrowserRouter>
+                <Routes />
+            </div>
         );
     }
 }

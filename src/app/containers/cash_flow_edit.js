@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Field, reduxForm, initialize } from 'redux-form';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { Container, Form, Dropdown, Button, TextArea, Input } from 'semantic-ui-react';
 
 import { addCashFlowItem, fetchCashFlow } from '../actions/cash_flow_actions';
@@ -27,7 +28,6 @@ class CashFlowEdit extends Component {
     }
 
     handleEditInitialize(id) {
-        debugger;
         const cashFlowItem = this.props.cashFlow.find(cashFlowItem => cashFlowItem.id === id);
         const { amountOfMoney, description, category, type, date } = cashFlowItem;
         const initialValues = {
