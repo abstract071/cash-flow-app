@@ -5,6 +5,7 @@ import { Container, Form, Button, Input, Dropdown } from 'semantic-ui-react';
 
 import { INCOME, EXPENSES } from '../constants/category_types';
 import { fetchCategories, editCategoryItem } from '../actions/category_actions';
+import validate from '../validation/category_form_validation';
 
 class CategoryEdit extends Component {
     componentWillMount() {
@@ -89,23 +90,13 @@ class CategoryEdit extends Component {
     }
 }
 
-function validate(values) {
-    let errors = {};
-
-    if (!values.category) {
-        errors.category = 'Enter a category name!';
-    }
-
-    return errors;
-}
-
 function mapStateToProps({ categories }) {
     return { categories };
 }
 
 export default reduxForm({
     validate,
-    form: 'CashFlowEditForm'
+    form: 'categoryEdit'
 })(
     connect(mapStateToProps, { fetchCategories, editCategoryItem })(CategoryEdit)
 );

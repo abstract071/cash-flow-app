@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Tab } from 'semantic-ui-react';
 
-import Categories from '../containers/categories_index';
+import Categories from '../containers/categories';
 import CashFlow from '../containers/cash_flow';
 import OverviewChart from '../containers/overview_chart';
 
