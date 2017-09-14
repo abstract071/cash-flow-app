@@ -1,2 +1,4 @@
-export const INCOME = 'income';
-export const EXPENSES = 'expenses';
+export const categoryTypes = {
+    INCOME: 'income',
+    EXPENSES: 'expenses'
+};

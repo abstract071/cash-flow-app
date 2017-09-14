@@ -2,16 +2,18 @@ import React, { Component } from 'react';
 import { Field, initialize } from 'redux-form';
 import { connect } from 'react-redux';
 import { Container, Form, Dropdown, Button, TextArea, Input } from 'semantic-ui-react';
+import _ from 'lodash';
 
 import { addCashFlowItem, fetchCashFlow } from '../actions/cash_flow_actions';
 import { fetchCategories } from '../actions/category_actions';
-import { EXPENSES, INCOME } from "../constants/category_types";
+import { categoryTypes } from "../constants/category_types";
+import renderCashFlowField from "./cash_flow_field";
 
 class CashFlowEdit extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { categoryType: INCOME };
+        this.state = { categoryType: categoryTypes.INCOME };
     }
 
     componentWillMount() {
@@ -26,7 +28,7 @@ class CashFlowEdit extends Component {
     }
 
     handleEditInitialize(id) {
-        console.log(this.props.cashFlow);
+        // console.log(this.props.cashFlow);
         const cashFlowItem = this.props.cashFlow.find(cashFlowItem => cashFlowItem.id === id);
         const { amountOfMoney, description, category, type, date } = cashFlowItem;
         const initialValues = {
@@ -43,29 +45,10 @@ class CashFlowEdit extends Component {
 
     handleAddInitialize() {
         const initialValues = {
-            type: INCOME
+            type: categoryTypes.INCOME
         };
 
         this.props.initialize(initialValues);
-    }
-
-    renderField({ input, label, meta: { touched, error }, as: As = Input, ...props }) {
-        return (
-            <Form.Field error={touched && !!error}>
-                <label htmlFor={input.name}>{label}</label>
-                <As {...input} {...props}
-                    onChange={(params,data) => { this.handleChange(input, data.value); input.onChange(data.value) }} />
-                <div>
-                    {touched ? error : ''}
-                </div>
-            </Form.Field>
-        );
-    }
-
-    handleChange(input, value) {
-        if (input.name === 'type') {
-            this.setState({ categoryType: value });
-        }
     }
 
     onSubmit(values) {
@@ -79,6 +62,13 @@ class CashFlowEdit extends Component {
         });
     }
 
+    handleChange(input, value) {
+        if (input.name === 'type') {
+            this.setState({ categoryType: value });
+        }
+        input.onChange(value);
+    }
+
     render() {
         const { handleSubmit } = this.props;
         const dropdownData = this.props.categories
@@ -88,17 +78,13 @@ class CashFlowEdit extends Component {
                     text: item.category,
                     value: item.category
                 }
+            });
+        const categoryTypesData = _.map(categoryTypes, value => {
+            return {
+                text: value,
+                value
+            };
         });
-        const categoryTypes = [
-            {
-                text: INCOME,
-                value: INCOME
-            },
-            {
-                text: EXPENSES,
-                value: EXPENSES
-            }
-        ];
 
         return (
             <Container>
@@ -106,43 +92,48 @@ class CashFlowEdit extends Component {
                     <Field
                         label="Amount"
                         name="amountOfMoney"
-                        component={this.renderField.bind(this)}
+                        component={renderCashFlowField}
                         as={Input}
                         placeholder="Amount of money..."
                         type="number"
+                        onCashFlowFieldChange={this.handleChange.bind(this)}
                     />
                     <Field
                         label="Description"
                         name="description"
-                        component={this.renderField.bind(this)}
+                        component={renderCashFlowField}
                         as={TextArea}
+                        onCashFlowFieldChange={this.handleChange.bind(this)}
                     />
                     <Field
                         label="Category"
                         name="category"
-                        component={this.renderField.bind(this)}
+                        component={renderCashFlowField}
                         as={Dropdown}
                         placeholder='Choose a category...'
                         fluid
                         selection
                         options={dropdownData}
+                        onCashFlowFieldChange={this.handleChange.bind(this)}
                     />
                     <Field
                         label="Category type"
                         name="type"
-                        component={this.renderField.bind(this)}
+                        component={renderCashFlowField}
                         as={Dropdown}
                         placeholder='Choose a type of category...'
                         fluid
                         selection
-                        options={categoryTypes}
+                        options={categoryTypesData}
+                        onCashFlowFieldChange={this.handleChange.bind(this)}
                     />
                     <Field
                         label="Date"
                         name="date"
-                        component={this.renderField.bind(this)}
+                        component={renderCashFlowField}
                         as={Input}
                         type="date"
+                        onCashFlowFieldChange={this.handleChange.bind(this)}
                     />
                     <Button type='submit'>Submit</Button>
                 </Form>

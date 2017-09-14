@@ -4,7 +4,7 @@ import { Container, Dropdown } from 'semantic-ui-react';
 import { ResponsiveContainer, Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from "recharts";
 
 import { fetchCashFlow } from '../actions/cash_flow_actions';
-import { INCOME } from '../constants/category_types';
+import { categoryTypes } from '../constants/category_types';
 
 class OverviewChart extends Component {
     constructor(props) {
@@ -69,7 +69,7 @@ class OverviewChart extends Component {
             return {
                 day,
                 'income/expenses': cashFlowItem ?
-                    cashFlowItem.type === INCOME ?
+                    cashFlowItem.type === categoryTypes.INCOME ?
                         +cashFlowItem.amountOfMoney : -Math.abs(+cashFlowItem.amountOfMoney) : 0
             };
         });

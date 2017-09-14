@@ -1,0 +1,2 @@
+1. Add propTypes to react components
+2. Add tests

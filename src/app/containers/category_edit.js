@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import { Field, reduxForm, initialize } from 'redux-form';
 import { connect } from 'react-redux';
 import { Container, Form, Button, Input, Dropdown } from 'semantic-ui-react';
+import _ from 'lodash';
 
-import { INCOME, EXPENSES } from '../constants/category_types';
+import { categoryTypes } from '../constants/category_types';
 import { fetchCategories, editCategoryItem } from '../actions/category_actions';
 import validate from '../validation/category_form_validation';
+import renderCategoryField from './category_field';
 
 class CategoryEdit extends Component {
     componentWillMount() {
@@ -26,20 +28,6 @@ class CategoryEdit extends Component {
         this.props.initialize(initialValues);
     }
 
-    renderField({ input, label, meta: { touched, error }, as: As = Input, ...props }) {
-
-        return (
-            <Form.Field error={touched && !!error}>
-                <label htmlFor={input.name}>{label}</label>
-                <As {...input} {...props}
-                    onChange={(params,data) => input.onChange(data.value)} />
-                <div>
-                    {touched ? error : ''}
-                </div>
-            </Form.Field>
-        );
-    }
-
     onSubmit(values) {
         const data = {
             oldName: this.props.match.params.name,
@@ -53,16 +41,12 @@ class CategoryEdit extends Component {
 
     render() {
         const { handleSubmit } = this.props;
-        const types = [
-            {
-                text: INCOME,
-                value: INCOME
-            },
-            {
-                text: EXPENSES,
-                value: EXPENSES
-            }
-        ];
+        const categoryTypesData = _.map(categoryTypes, value => {
+            return {
+                text: value,
+                value
+            };
+        });
 
         return (
             <Container>
@@ -70,18 +54,18 @@ class CategoryEdit extends Component {
                     <Field
                         label="Category Name"
                         name="category"
-                        component={this.renderField.bind(this)}
+                        component={renderCategoryField}
                         as={Input}
                     />
                     <Field
                         label="Type"
                         name="type"
-                        component={this.renderField.bind(this)}
+                        component={renderCategoryField}
                         as={Dropdown}
                         placeholder='Choose a type of category...'
                         fluid
                         selection
-                        options={types}
+                        options={categoryTypesData}
                     />
                     <Button type='submit'>Submit</Button>
                 </Form>
