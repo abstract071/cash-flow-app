@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
+import createBrowserHistory from 'history/createBrowserHistory';
 import { AppContainer } from 'react-hot-loader';
 import { Provider } from 'react-redux';
 import { createStore, compose } from 'redux';
@@ -21,7 +22,7 @@ const store = createStore(reducers, persistedState, enhancer);
 const render = App => {
     ReactDOM.render(
         <AppContainer>
-            <BrowserRouter>
+            <BrowserRouter history={createBrowserHistory()}>
                 <Provider store={store}>
                     <App/>
                 </Provider>
