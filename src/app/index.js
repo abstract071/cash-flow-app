@@ -22,11 +22,11 @@ const store = createStore(reducers, persistedState, enhancer);
 const render = App => {
     ReactDOM.render(
         <AppContainer>
-            <BrowserRouter history={createBrowserHistory()}>
-                <Provider store={store}>
+            <Provider store={store}>
+                <BrowserRouter history={createBrowserHistory()}>
                     <App/>
-                </Provider>
-            </BrowserRouter>
+                </BrowserRouter>
+            </Provider>
         </AppContainer>
         , document.querySelector('.container'));
 };
